@@ -1,0 +1,22 @@
+function [yhhh,yfs3,yf3,aaa,bbb,HHH,WWW,NFFT,f]=PasaBanda(Fsss,yhh,W1p,W2p,W1s,W2s,Rp,Rs);
+% % Wp=[2 100]/fe;             %%%%Normalizar bandas de frecuencia%%%%%%%%%
+% % Ws=[0.5 250]/fe;           %%%%Normalizar bandas de frecuencia%%%%%%%%%
+% % Rp=3;                      %%%%Atenuación en la banda de paso%%%%%%%%%%
+% % Rs=40;                     %%%%Atenuación en la banda de rechazo%%%%%%%
+fe=Fsss/2;                       %%%%Frecuencia de Nyquist%%%%%%%%%%%%%%%%%%%
+Resultat=[W1s W2s];
+Wss=Resultat;
+Resultat=[W1p W2p];
+Wpp=Resultat;
+Wp=Wpp/fe;                 %%%%Normalizar bandas de frecuencia%%%%%%%%%
+Ws=Wss/fe; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[nnn,Wnnn]=buttord(Wp,Ws,Rp,Rs);%%%%Calcular orden del filtro%%%%%%%%%%%%%%%
+[bbb,aaa]=butter(nnn,Wnnn);    %%%%Calcula coeficientes del filtro%%%%%%%%% 
+[HHH,WWW]=freqz(bbb,aaa,[],Fsss);%%%%Dibuja la magnitud respuesta frecuencial
+yhhh=filter(bbb,aaa,yhh); 
+L=length(yhh);
+NFFT=2^nextpow2(L);                %%%%Siguiente potencia de 2 del vector y
+f=Fsss/2*linspace(0,1,NFFT/2+1);
+yfs3=fft(yhh,NFFT)/L;
+yf3=fft(yhhh,NFFT)/L;
